@@ -1,0 +1,5 @@
+import { StyleSheet, Text, View } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { colors, fonts, radius, spacing } from "@/src/design/tokens";
+export function Toast({ feedback }: { feedback: { tone: "success" | "error"; message: string } | null }) { if (!feedback) return null; const isSuccess = feedback.tone === "success"; return <View accessibilityRole="alert" style={[styles.toast, isSuccess ? styles.success : styles.error]}><MaterialIcons name={isSuccess ? "check-circle" : "error-outline"} size={18} color={colors.surface} /><Text style={styles.text}>{feedback.message}</Text></View>; }
+const styles = StyleSheet.create({ toast: { flexDirection: "row", alignItems: "center", gap: spacing.xs, borderRadius: radius.control, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, marginTop: spacing.md }, success: { backgroundColor: colors.success }, error: { backgroundColor: colors.error }, text: { color: colors.surface, fontFamily: fonts.semibold, fontSize: 13, lineHeight: 18, flex: 1 } });

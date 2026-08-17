@@ -1,40 +1,7 @@
+import { Platform, StyleSheet } from "react-native";
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Platform } from "react-native";
-import { useColors } from "@/hooks/use-colors";
-
-export default function TabLayout() {
-  const colors = useColors();
-  const insets = useSafeAreaInsets();
-  const bottomPadding = Platform.OS === "web" ? 12 : Math.max(insets.bottom, 8);
-  const tabBarHeight = 56 + bottomPadding;
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: colors.tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarStyle: {
-          paddingTop: 8,
-          paddingBottom: bottomPadding,
-          height: tabBarHeight,
-          backgroundColor: colors.background,
-          borderTopColor: colors.border,
-          borderTopWidth: 0.5,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
-}
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { colors, fonts } from "@/src/design/tokens";
+export default function TabLayout() { const insets = useSafeAreaInsets(); const bottom = Platform.OS === "web" ? 10 : Math.max(insets.bottom, 8); return <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: colors.primary, tabBarInactiveTintColor: colors.muted, tabBarLabelStyle: styles.label, tabBarStyle: [styles.bar, { height: 58 + bottom, paddingBottom: bottom }], tabBarItemStyle: styles.item }}><Tabs.Screen name="index" options={{ title: "Início", tabBarIcon: ({ color }) => <MaterialIcons name="home-filled" size={22} color={color} /> }} /><Tabs.Screen name="explore" options={{ title: "Explorar", tabBarIcon: ({ color }) => <MaterialIcons name="explore" size={22} color={color} /> }} /><Tabs.Screen name="recommend" options={{ title: "Recomendar", tabBarIcon: ({ color }) => <MaterialIcons name="add-circle-outline" size={22} color={color} /> }} /><Tabs.Screen name="profile" options={{ title: "Perfil", tabBarIcon: ({ color }) => <MaterialIcons name="person-outline" size={22} color={color} /> }} /></Tabs>; }
+const styles = StyleSheet.create({ bar: { backgroundColor: colors.surface, borderTopColor: colors.border, borderTopWidth: 1, paddingTop: 7 }, label: { fontFamily: fonts.semibold, fontSize: 10 }, item: { paddingTop: 1 } });
