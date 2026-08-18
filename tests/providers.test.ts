@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterProviders } from "../src/data/providers";
+import { filterProviders, providers } from "../src/data/providers";
 
 describe("provider discovery", () => {
   it("filters by category", () => {
@@ -13,5 +13,9 @@ describe("provider discovery", () => {
   it("keeps category and search criteria combined", () => {
     expect(filterProviders("reparo", "Casa").map((item) => item.id)).toEqual(["casa-nova-eletrica"]);
     expect(filterProviders("reparo", "Pets")).toEqual([]);
+  });
+
+  it("provides a positive recommendation total for every provider card", () => {
+    expect(providers.every((provider) => Number.isInteger(provider.recommendations) && provider.recommendations > 0)).toBe(true);
   });
 });

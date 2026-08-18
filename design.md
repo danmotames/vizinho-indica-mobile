@@ -23,6 +23,12 @@ Cada tela usa safe areas e uma área de toque mínima de 44 pt no iOS e 48 dp no
 
 O conteúdo em lista usa `FlatList`; formulários usam rolagem vertical com teclado seguro. O botão de WhatsApp permanece dentro do cartão na descoberta e ganha largura total perto da identidade no detalhe. O texto adapta-se a Dynamic Type sem esconder ações relevantes.
 
+### Redesenho responsivo dos cards de descoberta
+
+Os cards de prestador passam a ter uma anatomia mínima e mais escaneável: ícone da categoria, nome do prestador, categoria, total de recomendações, nome do vizinho que indicou e CTA “Chame no WhatsApp”. Avaliação, distância, descrição, favoritos, tempo da indicação e atalhos secundários deixam de aparecer nas listas; permanecem disponíveis apenas no detalhe quando necessários.
+
+Em telefone, a coluna respeita gutters de 16 pt/dp e ocupa a largura disponível. Em tablet e web, a coluna é limitada a 640 pt para evitar linhas longas e preservar a leitura com uma mão. Os nomes usam 20 pt, a informação de confiança 15 pt e a CTA 16 pt, sempre com alturas de toque mínimas de 52 pt. Busca e filtros sobem para 16 pt e 14 pt, respectivamente, para que a Manrope mantenha leitura confortável sem perder a hierarquia visual.
+
 ## Fluxos prioritários
 
 1. **Descoberta:** Início → categoria ou busca → card de prestador → detalhe → “Chame no WhatsApp”.

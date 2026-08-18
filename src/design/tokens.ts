@@ -17,13 +17,13 @@ export const colors = {
 
 export const spacing = {
   unit: 8,
-  xxs: 8,
+  xxs: 4,
   xs: 8,
-  sm: 16,
+  sm: 12,
   md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
+  lg: 20,
+  xl: 24,
+  xxl: 32,
   hero: 48,
   large: 64,
 } as const;
