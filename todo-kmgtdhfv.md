@@ -8,3 +8,4 @@
 - [x] Criar e aplicar ícone de marca do aplicativo conforme os requisitos de branding
 - [x] Reiniciar o servidor de desenvolvimento após indisponibilidade
 - [x] Reduzir o consumo de memória do comando de desenvolvimento para manter a prévia disponível
+- [x] Restabelecer a conexão do Expo Go com o empacotador na porta 8081
