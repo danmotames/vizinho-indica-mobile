@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useWindowDimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 import { MessageCircle, UsersRound } from "lucide-react-native";
@@ -8,7 +9,7 @@ import type { Provider } from "@/src/data/providers";
 import { colors, elevation, fonts, radius, spacing } from "@/src/design/tokens";
 import { useWhatsAppContact } from "@/src/hooks/use-whatsapp-contact";
 
-export function ProviderCard({ provider }: { provider: Provider }) {
+export const ProviderCard = memo(function ProviderCard({ provider }: { provider: Provider }) {
   const { contact, feedback } = useWhatsAppContact();
   const CategoryIcon = getServiceIcon(provider.category);
   const { width } = useWindowDimensions();
@@ -61,7 +62,7 @@ export function ProviderCard({ provider }: { provider: Provider }) {
       <Toast feedback={feedback} />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   cardGroup: { alignItems: "center", marginBottom: spacing.md },
