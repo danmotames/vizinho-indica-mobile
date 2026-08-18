@@ -12,3 +12,8 @@
 - [x] Criar testes determinísticos para fluxos e regras críticas
 - [x] Validar tipos, lint e experiência responsiva nativa
 - [x] Documentar a migração e os limites do baseline local
+- [x] Aplicar grade de espaçamento baseada em múltiplos de 8 px
+- [x] Padronizar raios de cards, controles e bottom sheets
+- [x] Ajustar sombras para níveis discretos de elevação
+- [x] Reestruturar cards de serviços com ícone, categoria e CTA hierarquizados
+- [x] Validar a atualização do sistema visual

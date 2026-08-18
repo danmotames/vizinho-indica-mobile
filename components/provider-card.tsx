@@ -1,9 +1,110 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { BadgeCheck, ChevronRight, Heart, MessageCircle, Star } from "lucide-react-native";
+
+import { getServiceIcon } from "@/components/service-icon";
 import { Toast } from "@/components/toast";
 import type { Provider } from "@/src/data/providers";
-import { colors, fonts, radius, spacing } from "@/src/design/tokens";
+import { colors, elevation, fonts, radius, spacing } from "@/src/design/tokens";
 import { useWhatsAppContact } from "@/src/hooks/use-whatsapp-contact";
-export function ProviderCard({ provider }: { provider: Provider }) { const { contact, feedback } = useWhatsAppContact(); return <View style={styles.card}><Pressable accessibilityRole="button" accessibilityLabel={`Ver perfil de ${provider.name}`} onPress={() => router.push({ pathname: "/provider/[id]", params: { id: provider.id } })} style={({ pressed }) => [styles.content, pressed && styles.contentPressed]}><View style={styles.headline}><View style={styles.avatar}><Text style={styles.avatarText}>{provider.initials}</Text></View><View style={styles.titleBlock}><View style={styles.badge}><MaterialIcons name="verified" size={13} color={colors.success} /><Text style={styles.badgeText}>Recomendado</Text></View><Text style={styles.name}>{provider.name}</Text><Text style={styles.service}>{provider.service}</Text></View><MaterialIcons name="favorite-border" size={21} color={colors.muted} /></View><View style={styles.metaRow}><View style={styles.metaItem}><MaterialIcons name="star" size={15} color="#E5A131" /><Text style={styles.metaStrong}>{provider.rating}</Text><Text style={styles.metaText}>({provider.reviews})</Text></View><Text style={styles.metaText}>•</Text><Text style={styles.metaText}>{provider.distance}</Text><View style={styles.category}><Text style={styles.categoryText}>{provider.category}</Text></View></View><Text numberOfLines={3} style={styles.quote}>“{provider.quote}”</Text><View style={styles.byline}><View style={styles.miniAvatar}><Text style={styles.miniAvatarText}>{provider.recommendedBy.charAt(0)}</Text></View><Text style={styles.bylineText}>Indicado por <Text style={styles.bylineStrong}>{provider.recommendedBy}</Text></Text><Text style={styles.when}>{provider.when}</Text></View></Pressable><View style={styles.actions}><Pressable accessibilityRole="button" accessibilityLabel={`Ver perfil de ${provider.name}`} onPress={() => router.push({ pathname: "/provider/[id]", params: { id: provider.id } })} style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}><Text style={styles.secondaryText}>Ver perfil</Text><MaterialIcons name="chevron-right" size={18} color={colors.primary} /></Pressable><Pressable accessibilityRole="button" accessibilityLabel={`Chame no WhatsApp com ${provider.name}`} onPress={() => void contact(provider)} style={({ pressed }) => [styles.whatsappAction, pressed && styles.pressed]}><MaterialIcons name="chat" size={18} color={colors.surface} /><Text style={styles.whatsappText}>Chame no WhatsApp</Text></Pressable></View><Toast feedback={feedback} /></View>; }
-const styles = StyleSheet.create({ card: { marginHorizontal: spacing.lg, marginBottom: spacing.md, backgroundColor: colors.surface, borderRadius: radius.card, shadowColor: colors.shadow, shadowOpacity: 0.12, shadowRadius: 18, shadowOffset: { width: 0, height: 8 }, elevation: 3, overflow: "hidden" }, content: { padding: spacing.lg, paddingBottom: spacing.sm }, contentPressed: { opacity: 0.78 }, headline: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm }, avatar: { width: 46, height: 46, borderRadius: 16, alignItems: "center", justifyContent: "center", backgroundColor: colors.surfaceSoft }, avatarText: { color: colors.primaryDeep, fontFamily: fonts.extraBold, fontSize: 14 }, titleBlock: { flex: 1, gap: 2 }, badge: { flexDirection: "row", alignItems: "center", alignSelf: "flex-start", gap: 3, borderRadius: radius.pill, backgroundColor: "#EAF8F1", paddingHorizontal: 7, paddingVertical: 3 }, badgeText: { color: colors.success, fontFamily: fonts.bold, fontSize: 10 }, name: { color: colors.text, fontFamily: fonts.bold, fontSize: 17, lineHeight: 22 }, service: { color: colors.muted, fontFamily: fonts.medium, fontSize: 13, lineHeight: 18 }, metaRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 6, marginTop: spacing.md }, metaItem: { flexDirection: "row", alignItems: "center", gap: 3 }, metaStrong: { color: colors.text, fontFamily: fonts.bold, fontSize: 12 }, metaText: { color: colors.muted, fontFamily: fonts.medium, fontSize: 12 }, category: { backgroundColor: colors.chip, borderRadius: radius.pill, paddingHorizontal: 8, paddingVertical: 3 }, categoryText: { color: colors.primaryDeep, fontFamily: fonts.semibold, fontSize: 11 }, quote: { color: colors.text, fontFamily: fonts.medium, fontSize: 13, lineHeight: 20, marginTop: spacing.md }, byline: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: spacing.md }, miniAvatar: { width: 20, height: 20, borderRadius: 10, backgroundColor: "#F0EAFE", alignItems: "center", justifyContent: "center" }, miniAvatarText: { color: colors.primaryDeep, fontFamily: fonts.bold, fontSize: 9 }, bylineText: { color: colors.muted, fontFamily: fonts.medium, fontSize: 11, flex: 1 }, bylineStrong: { color: colors.text, fontFamily: fonts.semibold }, when: { color: colors.muted, fontFamily: fonts.medium, fontSize: 10 }, actions: { flexDirection: "row", alignItems: "center", gap: spacing.sm, padding: spacing.lg, paddingTop: spacing.sm }, secondaryAction: { flexDirection: "row", alignItems: "center", minHeight: 44, paddingHorizontal: spacing.sm, gap: 2 }, secondaryText: { color: colors.primary, fontFamily: fonts.bold, fontSize: 13 }, whatsappAction: { flex: 1, minHeight: 46, alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 7, backgroundColor: colors.whatsapp, borderRadius: radius.control }, whatsappText: { color: colors.surface, fontFamily: fonts.bold, fontSize: 13 }, pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] } });
+
+export function ProviderCard({ provider }: { provider: Provider }) {
+  const { contact, feedback } = useWhatsAppContact();
+  const CategoryIcon = getServiceIcon(provider.category);
+
+  return (
+    <View style={styles.card}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`Ver perfil de ${provider.name}`}
+        onPress={() => router.push({ pathname: "/provider/[id]", params: { id: provider.id } })}
+        style={({ pressed }) => [styles.content, pressed && styles.contentPressed]}
+      >
+        <View style={styles.headerRow}>
+          <View style={styles.iconTile}>
+            <CategoryIcon size={24} strokeWidth={2} color={colors.primaryDeep} />
+          </View>
+          <View style={styles.titleBlock}>
+            <View style={styles.categoryRow}>
+              <Text style={styles.categoryText}>{provider.category}</Text>
+              <View style={styles.verifiedBadge}>
+                <BadgeCheck size={14} strokeWidth={2.4} color={colors.success} />
+                <Text style={styles.verifiedText}>Recomendado</Text>
+              </View>
+            </View>
+            <Text style={styles.name}>{provider.name}</Text>
+            <Text style={styles.service}>{provider.service}</Text>
+          </View>
+          <Pressable accessibilityRole="button" accessibilityLabel={`Salvar ${provider.name}`} hitSlop={8} style={({ pressed }) => [styles.favoriteButton, pressed && styles.iconPressed]}>
+            <Heart size={20} strokeWidth={2} color={colors.muted} />
+          </Pressable>
+        </View>
+
+        <View style={styles.metaRow}>
+          <View style={styles.ratingGroup}>
+            <Star size={16} fill="#E5A131" color="#E5A131" strokeWidth={1.8} />
+            <Text style={styles.rating}>{provider.rating}</Text>
+            <Text style={styles.reviews}>({provider.reviews})</Text>
+          </View>
+          <View style={styles.dot} />
+          <Text style={styles.distance}>{provider.distance}</Text>
+        </View>
+
+        <Text numberOfLines={3} style={styles.quote}>“{provider.quote}”</Text>
+        <View style={styles.byline}>
+          <View style={styles.miniAvatar}><Text style={styles.miniAvatarText}>{provider.recommendedBy.charAt(0)}</Text></View>
+          <Text style={styles.bylineText}>Indicado por <Text style={styles.bylineStrong}>{provider.recommendedBy}</Text></Text>
+          <Text style={styles.when}>{provider.when}</Text>
+        </View>
+      </Pressable>
+
+      <View style={styles.actions}>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Ver perfil de ${provider.name}`} onPress={() => router.push({ pathname: "/provider/[id]", params: { id: provider.id } })} style={({ pressed }) => [styles.profileAction, pressed && styles.iconPressed]}>
+          <Text style={styles.profileText}>Ver perfil</Text>
+          <ChevronRight size={18} strokeWidth={2.2} color={colors.primary} />
+        </Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Chame no WhatsApp com ${provider.name}`} onPress={() => void contact(provider)} style={({ pressed }) => [styles.whatsappAction, pressed && styles.actionPressed]}>
+          <MessageCircle size={18} strokeWidth={2.2} color={colors.surface} />
+          <Text style={styles.whatsappText}>Chame no WhatsApp</Text>
+        </Pressable>
+      </View>
+      <Toast feedback={feedback} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: { marginHorizontal: spacing.lg, marginBottom: spacing.sm, backgroundColor: colors.surface, borderRadius: radius.card, ...elevation.level1, overflow: "hidden" },
+  content: { padding: spacing.lg },
+  contentPressed: { opacity: 0.82 },
+  headerRow: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
+  iconTile: { width: 48, height: 48, borderRadius: radius.control, alignItems: "center", justifyContent: "center", backgroundColor: colors.surfaceSoft },
+  titleBlock: { flex: 1, gap: spacing.xxs },
+  categoryRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: spacing.xs },
+  categoryText: { color: colors.primaryDeep, fontFamily: fonts.extraBold, fontSize: 11, letterSpacing: 0.7, textTransform: "uppercase" },
+  verifiedBadge: { minHeight: 24, flexDirection: "row", alignItems: "center", gap: spacing.xxs, paddingHorizontal: spacing.xs, borderRadius: radius.pill, backgroundColor: "#EAF8F1" },
+  verifiedText: { color: colors.success, fontFamily: fonts.bold, fontSize: 10 },
+  name: { color: colors.text, fontFamily: fonts.bold, fontSize: 18, lineHeight: 24 },
+  service: { color: colors.muted, fontFamily: fonts.medium, fontSize: 13, lineHeight: 16 },
+  favoriteButton: { width: 48, height: 48, borderRadius: radius.control, alignItems: "center", justifyContent: "center" },
+  metaRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginTop: spacing.sm },
+  ratingGroup: { flexDirection: "row", alignItems: "center", gap: spacing.xxs },
+  rating: { color: colors.text, fontFamily: fonts.bold, fontSize: 13 },
+  reviews: { color: colors.muted, fontFamily: fonts.medium, fontSize: 12 },
+  dot: { width: 8, height: 8, borderRadius: radius.pill, backgroundColor: colors.border },
+  distance: { color: colors.muted, fontFamily: fonts.medium, fontSize: 12 },
+  quote: { color: colors.text, fontFamily: fonts.medium, fontSize: 14, lineHeight: 24, marginTop: spacing.sm },
+  byline: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginTop: spacing.sm },
+  miniAvatar: { width: 24, height: 24, borderRadius: radius.pill, backgroundColor: "#F0EAFE", alignItems: "center", justifyContent: "center" },
+  miniAvatarText: { color: colors.primaryDeep, fontFamily: fonts.bold, fontSize: 10 },
+  bylineText: { color: colors.muted, fontFamily: fonts.medium, fontSize: 11, flex: 1 },
+  bylineStrong: { color: colors.text, fontFamily: fonts.semibold },
+  when: { color: colors.muted, fontFamily: fonts.medium, fontSize: 11 },
+  actions: { flexDirection: "row", alignItems: "center", gap: spacing.sm, paddingHorizontal: spacing.lg, paddingBottom: spacing.lg },
+  profileAction: { minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: spacing.xxs, paddingHorizontal: spacing.xs },
+  profileText: { color: colors.primary, fontFamily: fonts.bold, fontSize: 13 },
+  whatsappAction: { flex: 1, minHeight: 48, alignItems: "center", justifyContent: "center", flexDirection: "row", gap: spacing.xs, backgroundColor: colors.whatsapp, borderRadius: radius.control },
+  whatsappText: { color: colors.surface, fontFamily: fonts.bold, fontSize: 13 },
+  actionPressed: { opacity: 0.86, transform: [{ scale: 0.98 }] },
+  iconPressed: { opacity: 0.68 },
+});

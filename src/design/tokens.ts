@@ -15,6 +15,23 @@ export const colors = {
   shadow: "#314275",
 } as const;
 
-export const spacing = { xxs: 4, xs: 8, sm: 12, md: 16, lg: 20, xl: 24, xxl: 32, hero: 48 } as const;
-export const radius = { control: 14, card: 24, pill: 999 } as const;
+export const spacing = {
+  unit: 8,
+  xxs: 8,
+  xs: 8,
+  sm: 16,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
+  hero: 48,
+  large: 64,
+} as const;
+
+export const radius = { control: 16, card: 20, sheet: 28, pill: 999 } as const;
+
+export const elevation = {
+  level1: { boxShadow: "0px 2px 8px rgba(49, 66, 117, 0.06)" },
+  level2: { boxShadow: "0px 6px 16px rgba(49, 66, 117, 0.08)" },
+} as const;
 export const fonts = { regular: "Manrope_400Regular", medium: "Manrope_500Medium", semibold: "Manrope_600SemiBold", bold: "Manrope_700Bold", extraBold: "Manrope_800ExtraBold" } as const;
