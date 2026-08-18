@@ -9,6 +9,7 @@
 - `components/`: reusable UI building blocks such as cards, chips, toasts, and layout helpers.
 - `src/data/providers.ts`: local demo data plus discovery filtering helpers. Many UI flows still depend on this local dataset.
 - `src/design/tokens.ts`: canonical visual tokens for colors, spacing, radius, elevation, and fonts.
+- `global.css`, `tailwind.config.js`, `metro.config.js`: NativeWind/Tailwind wiring for shared utility styling support.
 - `src/lib/` and `hooks/`: client-side helpers such as haptics, WhatsApp contact flow, and auth hooks.
 - `server/`: Express entrypoint, OAuth/session logic, tRPC router, storage proxy, and DB helpers.
 - `drizzle/` + `drizzle.config.ts`: schema/migrations for MySQL-backed persistence.
@@ -19,6 +20,7 @@
 - Prefer small changes in the existing structure instead of introducing new patterns.
 - Reuse the existing `@/*` and `@shared/*` TypeScript path aliases from `tsconfig.json`.
 - Match the existing styling approach: React Native `StyleSheet`, shared tokens from `src/design/tokens.ts`, and existing UI primitives like `ScreenContainer`, `Toast`, and `CategoryChip`.
+- NativeWind is configured, but much of the app currently uses explicit `StyleSheet` objects; follow the local style of the file you are editing instead of forcing a rewrite.
 - Keep the app mobile-first and preserve the current visual identity from `design.md` / `MIGRATION.md` (lavender background, white cards, blue primary CTA, green WhatsApp CTA, Manrope typography).
 - Preserve accessibility props and haptic/toast feedback patterns when changing interactive UI.
 
@@ -42,6 +44,7 @@
   - Web uses cookie-based auth and backend endpoints.
   - Native uses `expo-secure-store` token storage and deep-link/OAuth callback handling.
 - Environment variables for Expo/public auth values can be sourced indirectly through `scripts/load-env.js`, which maps several non-Expo variable names into `EXPO_PUBLIC_*`.
+- Expo Router is file-based: the tab shell lives in `app/(tabs)/_layout.tsx`, and most route files delegate to screens under `src/features/`.
 
 ## Validation expectations
 - For most changes, run `pnpm check`, `pnpm lint`, and `pnpm test`.
@@ -52,6 +55,8 @@
 - `drizzle.config.ts` throws immediately if `DATABASE_URL` is missing. Workaround: avoid `pnpm db:push` unless DB env vars are configured.
 - `server/db.ts` is intentionally lazy, so most app/test work can proceed without a database connection.
 - `tests/auth.logout.test.ts` is currently wrapped in `describe.skip(...)`; the rest of the test suite is the reliable baseline today.
+- `metro.config.js` uses `withNativeWind(..., { input: "./global.css", forceWriteFileSystem: true })`. This is a deliberate workaround for development styling issues, especially on iOS; preserve it unless you are intentionally fixing the styling pipeline.
+- `pnpm dev` already sets `EXPO_NO_METRO_WORKSPACE_ROOT=1`, and Metro defaults to port `8081` unless `EXPO_PORT` is overridden.
 - `constants/oauth.ts` and related auth files contain platform-specific URL/deep-link logic. Be careful when changing auth because web and native flows diverge.
 - Many UI files are intentionally compact or one-line formatted; do not confuse that with generated code, but feel free to reformat locally if needed for a focused change.
 
