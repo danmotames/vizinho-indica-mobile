@@ -1,0 +1,66 @@
+## Repository overview
+- This is an Expo 54 / React Native 0.81 mobile app for local service recommendations (`Vizinho Indica`) with Expo Router routes in `app/`.
+- The UI is primarily native/mobile-first. Most product copy is in Brazilian Portuguese and should stay consistent.
+- There is also a lightweight Express + tRPC backend in `server/` plus optional Drizzle/MySQL persistence.
+
+## Key structure
+- `app/`: Expo Router route files. Most route files are thin wrappers around feature screens.
+- `src/features/`: screen implementations by domain (`discovery`, `providers`, `recommendations`, `profile`).
+- `components/`: reusable UI building blocks such as cards, chips, toasts, and layout helpers.
+- `src/data/providers.ts`: local demo data plus discovery filtering helpers. Many UI flows still depend on this local dataset.
+- `src/design/tokens.ts`: canonical visual tokens for colors, spacing, radius, elevation, and fonts.
+- `global.css`, `tailwind.config.js`, `metro.config.js`: NativeWind/Tailwind wiring for shared utility styling support.
+- `src/lib/` and `hooks/`: client-side helpers such as haptics, WhatsApp contact flow, and auth hooks.
+- `server/`: Express entrypoint, OAuth/session logic, tRPC router, storage proxy, and DB helpers.
+- `drizzle/` + `drizzle.config.ts`: schema/migrations for MySQL-backed persistence.
+- `tests/`: Vitest coverage for provider filtering, WhatsApp URL generation, and auth logout behavior.
+
+## Working conventions
+- Use `pnpm`; `package.json` declares `pnpm@9.12.0`.
+- Prefer small changes in the existing structure instead of introducing new patterns.
+- Reuse the existing `@/*` and `@shared/*` TypeScript path aliases from `tsconfig.json`.
+- Match the existing styling approach: React Native `StyleSheet`, shared tokens from `src/design/tokens.ts`, and existing UI primitives like `ScreenContainer`, `Toast`, and `CategoryChip`.
+- NativeWind is configured, but much of the app currently uses explicit `StyleSheet` objects; follow the local style of the file you are editing instead of forcing a rewrite.
+- Keep the app mobile-first and preserve the current visual identity from `design.md` / `MIGRATION.md` (lavender background, white cards, blue primary CTA, green WhatsApp CTA, Manrope typography).
+- Preserve accessibility props and haptic/toast feedback patterns when changing interactive UI.
+
+## Common commands
+- Install: `pnpm install`
+- Run Expo web/dev client: `pnpm dev`
+- Run Expo + API together: `pnpm dev:full`
+- Run only API server: `pnpm dev:server`
+- Type-check: `pnpm check`
+- Lint: `pnpm lint`
+- Test: `pnpm test`
+- Build backend bundle: `pnpm build`
+- Database migrations: `pnpm db:push`
+
+## Architecture notes
+- The main mobile experience is currently backed by local mock data; not every screen is wired to the backend yet.
+- Provider discovery and detail flows are driven by `src/data/providers.ts`.
+- The backend entrypoint is `server/_core/index.ts`; it mounts `/api/health`, `/api/trpc`, OAuth routes, and the storage proxy.
+- The server will try to bind to port `3000`, but automatically searches the next available ports if `3000` is busy.
+- Authentication differs by platform:
+  - Web uses cookie-based auth and backend endpoints.
+  - Native uses `expo-secure-store` token storage and deep-link/OAuth callback handling.
+- Environment variables for Expo/public auth values can be sourced indirectly through `scripts/load-env.js`, which maps several non-Expo variable names into `EXPO_PUBLIC_*`.
+- Expo Router is file-based: the tab shell lives in `app/(tabs)/_layout.tsx`, and most route files delegate to screens under `src/features/`.
+
+## Validation expectations
+- For most changes, run `pnpm check`, `pnpm lint`, and `pnpm test`.
+- Run `pnpm build` when changing backend/server code.
+- Only run `pnpm db:push` when schema/migration work is required and `DATABASE_URL` is available.
+
+## Known gotchas and workarounds
+- `drizzle.config.ts` throws immediately if `DATABASE_URL` is missing. Workaround: avoid `pnpm db:push` unless DB env vars are configured.
+- `server/db.ts` is intentionally lazy, so most app/test work can proceed without a database connection.
+- `tests/auth.logout.test.ts` is currently wrapped in `describe.skip(...)`; the rest of the test suite is the reliable baseline today.
+- `metro.config.js` uses `withNativeWind(..., { input: "./global.css", forceWriteFileSystem: true })`. This is a deliberate workaround for development styling issues, especially on iOS; preserve it unless you are intentionally fixing the styling pipeline.
+- `pnpm dev` already sets `EXPO_NO_METRO_WORKSPACE_ROOT=1`, and Metro defaults to port `8081` unless `EXPO_PORT` is overridden.
+- `constants/oauth.ts` and related auth files contain platform-specific URL/deep-link logic. Be careful when changing auth because web and native flows diverge.
+- Many UI files are intentionally compact or one-line formatted; do not confuse that with generated code, but feel free to reformat locally if needed for a focused change.
+
+## If you are making changes
+- Update the smallest relevant route/screen/component layer instead of duplicating logic.
+- Prefer adding domain behavior in `src/features/`, shared visuals in `components/`, shared helpers in `src/lib/` or `hooks/`, and API/server behavior in `server/`.
+- If you add tests, place them in `tests/` and mirror the current Vitest style.
