@@ -9,10 +9,13 @@ export const providers: Provider[] = [
 ];
 export function getProvider(id: string) { return providers.find((provider) => provider.id === id); }
 
+export const SEARCHABLE_MAP: Record<string, string> = Object.fromEntries(
+  providers.map((p) => [p.id, `${p.name} ${p.service} ${p.category}`.toLocaleLowerCase("pt-BR")]),
+);
+
 export function filterProviders(search: string, category: Category) {
   const normalizedSearch = search.trim().toLocaleLowerCase("pt-BR");
   return providers.filter((provider) => {
-    const searchable = `${provider.name} ${provider.service} ${provider.category}`.toLocaleLowerCase("pt-BR");
-    return (category === "Todas" || provider.category === category) && searchable.includes(normalizedSearch);
+    return (category === "Todas" || provider.category === category) && (SEARCHABLE_MAP[provider.id] ?? "").includes(normalizedSearch);
   });
 }

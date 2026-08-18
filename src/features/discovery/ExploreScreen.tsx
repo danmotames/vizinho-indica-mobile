@@ -7,11 +7,13 @@ import { ProviderCard } from "@/components/provider-card";
 import { ScreenContainer } from "@/components/screen-container";
 import { categories, filterProviders, type Category } from "@/src/data/providers";
 import { colors, fonts, radius, spacing } from "@/src/design/tokens";
+import { useDebounce } from "@/src/hooks/useDebounce";
 
 export function ExploreScreen() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<Category>("Todas");
-  const filtered = useMemo(() => filterProviders(search, category), [category, search]);
+  const debouncedSearch = useDebounce(search, 300);
+  const filtered = useMemo(() => filterProviders(debouncedSearch, category), [category, debouncedSearch]);
   const resultLabel = `${filtered.length} ${filtered.length === 1 ? "recomendação encontrada" : "recomendações encontradas"}`;
 
   return (
@@ -22,6 +24,10 @@ export function ExploreScreen() {
         renderItem={({ item }) => <ProviderCard provider={item} />}
         contentContainerStyle={styles.list}
         keyboardShouldPersistTaps="handled"
+        maxToRenderPerBatch={10}
+        updateCellsBatchingPeriod={50}
+        initialNumToRender={12}
+        removeClippedSubviews={true}
         ListHeaderComponent={
           <View style={styles.headerContent}>
             <Text style={styles.eyebrow}>EXPLORAR</Text>
